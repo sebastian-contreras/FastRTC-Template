@@ -57,10 +57,6 @@ Si el usuario quiere avanzar, tomá su nombre y método de contacto preferido, o
 DEFAULT_VOICE = "shimmer"
 
 
-# Temperature for response generation (0.0 - 1.0)
-# Lower = more focused, Higher = more creative
-DEFAULT_TEMPERATURE = 0.8
-
 # Maximum response tokens (None for no limit)
 MAX_RESPONSE_TOKENS = None
 
@@ -68,31 +64,40 @@ MAX_RESPONSE_TOKENS = None
 def get_session_config(
     instructions: str = SYSTEM_INSTRUCTIONS,
     voice: str = DEFAULT_VOICE,
-    temperature: float = DEFAULT_TEMPERATURE,
     max_response_tokens: int | None = MAX_RESPONSE_TOKENS,
+    transcription_model: str | None = None,
 ) -> dict:
     """
-    Build the session configuration for OpenAI Realtime API.
+    Build the session configuration for the OpenAI Realtime API (GA schema).
 
     Args:
         instructions: System instructions for the assistant
         voice: Voice to use for TTS (alloy, echo, fable, onyx, nova, shimmer)
-        temperature: Response temperature (0.0 - 1.0)
         max_response_tokens: Max tokens for response (None for unlimited)
+        transcription_model: Input transcription model, or None to skip it
 
     Returns:
         Session configuration dict for conn.session.update()
     """
-    config = {
-        "instructions": instructions.strip(),
-        "voice": voice,
-        "temperature": temperature,
+    audio_format = {"type": "audio/pcm", "rate": 24000}
+
+    input_audio: dict = {
+        "format": audio_format,
         "turn_detection": {"type": "server_vad"},
-        "input_audio_format": "pcm16",
-        "output_audio_format": "pcm16",
+    }
+    if transcription_model is not None:
+        input_audio["transcription"] = {"model": transcription_model}
+
+    config = {
+        "type": "realtime",
+        "instructions": instructions.strip(),
+        "audio": {
+            "input": input_audio,
+            "output": {"format": audio_format, "voice": voice},
+        },
     }
 
     if max_response_tokens is not None:
-        config["max_response_output_tokens"] = max_response_tokens
+        config["max_output_tokens"] = max_response_tokens
 
     return config

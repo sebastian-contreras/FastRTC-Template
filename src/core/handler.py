@@ -36,11 +36,9 @@ class OpenAIRealtimeHandler(AsyncStreamHandler):
             ) as conn:
                 logger.info("Connected to OpenAI Realtime API")
                 # Build session config with system instructions
-                session_config = get_session_config()
-                # Add transcription model
-                session_config["input_audio_transcription"] = {
-                    "model": settings.openai_transcription_model
-                }
+                session_config = get_session_config(
+                    transcription_model=settings.openai_transcription_model
+                )
                 await conn.session.update(session=session_config)
                 self.connection = conn
                 await self._handle_events()
