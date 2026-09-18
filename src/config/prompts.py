@@ -4,6 +4,12 @@ System prompts and instructions for OpenAI Realtime API.
 The Realtime API uses 'instructions' instead of 'system' messages.
 These instructions guide the assistant's behavior, personality, and responses.
 """
+"""
+System prompts and instructions for OpenAI Realtime API.
+
+The Realtime API uses 'instructions' instead of 'system' messages.
+These instructions guide the assistant's behavior, personality, and responses.
+"""
 
 # Default system instructions for the voice assistant
 SYSTEM_INSTRUCTIONS = """
@@ -49,6 +55,7 @@ Si el usuario quiere avanzar, tomá su nombre y método de contacto preferido, o
 # Voice options: alloy, echo, fable, onyx, nova, shimmer
 # shimmer = voz femenina cálida (requerimiento: asistente mujer, acento argentino)
 DEFAULT_VOICE = "shimmer"
+
 
 # Temperature for response generation (0.0 - 1.0)
 # Lower = more focused, Higher = more creative
